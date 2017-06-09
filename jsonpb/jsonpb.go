@@ -754,7 +754,11 @@ func (u *Unmarshaler) unmarshalValue(target reflect.Value, inputValue json.RawMe
 		s := inputValue[1 : len(inputValue)-1]
 		n, ok := vmap[string(s)]
 		if !ok {
-			return fmt.Errorf("unknown value %q for enum %s", s, prop.Enum)
+			n2, err := strconv.Atoi(string(s))
+			if err != nil {
+				return fmt.Errorf("unknown value %q for enum %s", s, prop.Enum)
+			}
+			n = int32(n2)
 		}
 		if target.Kind() == reflect.Ptr { // proto2
 			target.Set(reflect.New(targetType.Elem()))
